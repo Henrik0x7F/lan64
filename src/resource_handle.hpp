@@ -1,0 +1,35 @@
+//
+// Created by henrik on 30.09.19
+//
+
+#pragma once
+
+#include <memory>
+
+
+/// Allows using standalone functions as deleter for unique_ptr
+template<auto* FN>
+struct Deleter;
+
+template<typename Res, typename Ret, Ret (*FN)(Res)>
+struct Deleter<FN>
+{
+    using pointer = Res;
+    using ElementType = std::conditional_t<std::is_pointer_v<Res>, std::remove_pointer_t<Res>, void>;
+
+    void operator()(Res res) { FN(res); }
+};
+
+/**
+ * RAII wrapper for resources with custom deleter
+ * @tparam free_fn Function used to free the resource
+ */
+template<auto* free_fn>
+using ResourceHandle = std::unique_ptr<typename Deleter<free_fn>::ElementType, Deleter<free_fn>>;
+
+
+template<auto* free_fn>
+auto make_shared_resource_handle(typename Deleter<free_fn>::ElementType res = {})
+{
+    return std::shared_ptr<typename Deleter<free_fn>::ElementType>(res, free_fn);
+}
