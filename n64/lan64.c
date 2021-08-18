@@ -46,6 +46,20 @@ lan64_state_t lan64_state_g;
 #define LAN64_MAGIC_NUMBER_PTR ((u32*)LAN64_MAGIC_NUMBER_ADDR)
 
 
+static void dummy_event_handler(lan64_event_t a, void* b)
+{
+    (void)a;
+    (void)b;
+}
+
+static void dummy_packet_handler(lan64_addr_t a, const void* b, u32 c, void* d)
+{
+    (void)a;
+    (void)b;
+    (void)c;
+    (void)d;
+}
+
 s32 lan64_initialize(const lan64_handlers_t* handlers)
 {
     memset(&lan64_state_g, 0, sizeof(lan64_state_t));
@@ -58,7 +72,6 @@ s32 lan64_initialize(const lan64_handlers_t* handlers)
     lan64_header_l.version_major = LAN64_VERSION_MAJOR;
     lan64_header_l.version_minor = LAN64_VERSION_MINOR;
 
-
     /* Init message queues */
     lan64_queue_create(&lan64_state_g.in_queue, lan64_state_g.in_queue_buf, LAN64_QUEUE_IN_SIZE);
     lan64_queue_create(&lan64_state_g.out_queue, lan64_state_g.out_queue_buf, LAN64_QUEUE_OUT_SIZE);
@@ -67,7 +80,8 @@ s32 lan64_initialize(const lan64_handlers_t* handlers)
     lan64_header_l.in_queue = &lan64_state_g.in_queue;
 
     /* Init callbacks */
-    lan64_state_g.event_handlers = *handlers;
+    lan64_state_g.event_handlers.event_handler = (handlers && handlers->event_handler) ? handlers->event_handler : &dummy_event_handler;
+    lan64_state_g.event_handlers.packet_handler = (handlers && handlers->packet_handler) ? handlers->packet_handler : &dummy_packet_handler;
 
     /* Local address placeholder */
     lan64_state_g.addr = LAN64_BROADCAST;

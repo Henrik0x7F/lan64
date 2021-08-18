@@ -50,7 +50,12 @@ typedef struct
  * Event
  * User pointer */
 typedef void(*lan64_event_handler_t)(lan64_event_t, void*);
-typedef s32(*lan64_packet_handler_t)(lan64_addr_t, const void*, u32, void*);
+/* Called upon receiving a packet
+ * Sender
+ * Packet buffer
+ * Buffer len
+ * User pointer */
+typedef void(*lan64_packet_handler_t)(lan64_addr_t, const void*, u32, void*);
 
 /* Handler struct */
 typedef struct
