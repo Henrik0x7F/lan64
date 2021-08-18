@@ -164,3 +164,13 @@ s32 lan64_log(lan64_loglevel_t loglevel, const char* log_message)
 
     return lan64_send_msg_log(&lan64_state_g.out_queue, &msg);
 }
+
+s32 lan64_send(lan64_addr_t addr, const void* buf, lan64_msg_size_t len)
+{
+    lan64_game_msg_packet_t msg;
+    msg.data = (const u8*)buf;
+    msg.receiver = addr;
+    msg.len = len;
+
+    return lan64_send_msg_packet(&lan64_state_g.out_queue, &msg);
+}
