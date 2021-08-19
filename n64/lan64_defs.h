@@ -8,6 +8,8 @@ typedef lan64_u8 lan64_loglevel_t;
 typedef lan64_u8 lan64_addr_t;
 typedef lan64_u16 lan64_queue_size_t;
 typedef lan64_u8 lan64_msg_size_t;
+typedef lan64_u8 lan64_msg_id_t;
+
 
 /* LAN64 version info */
 #define LAN64_VERSION_MAJOR 1
@@ -17,7 +19,7 @@ typedef lan64_u8 lan64_msg_size_t;
 #define LAN64_MAX_MSG_LEN 255
 #define LAN64_BROADCAST 0
 #define LAN64_MAX_CLIENTS 255
-#define LAN64_MAX_PACKET_LEN (LAN64_MAX_MSG_LEN - sizeof(lan64_addr_t) - sizeof(lan64_msg_size_t) - 1)
+#define LAN64_MAX_PACKET_LEN (LAN64_MAX_MSG_LEN - sizeof(lan64_addr_t) - sizeof(lan64_msg_size_t) - sizeof(lan64_msg_id_t))
 #define LAN64_NAME_LEN 25
 
 /* Message queue sizes */

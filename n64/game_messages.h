@@ -15,8 +15,6 @@ enum
     LAN64_GAME_MSG_COUNT
 };
 
-typedef lan64_u8 lan64_game_msg_id_t;
-
 #define LAN64_MAX_LOG_LEN (LAN64_MAX_MSG_LEN - sizeof(lan64_game_msg_id_t) - sizeof(lan64_loglevel_t))
 
 typedef struct

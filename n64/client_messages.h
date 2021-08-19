@@ -17,8 +17,6 @@ enum
     LAN64_CLIENT_MSG_COUNT
 };
 
-typedef lan64_u8 lan64_client_msg_id_t;
-
 typedef struct
 {
     lan64_u8 x;
