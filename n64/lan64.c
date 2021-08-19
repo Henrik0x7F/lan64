@@ -147,9 +147,14 @@ s32 lan64_update(void* packet_usr, void* event_usr)
                 if(!lan64_parse_client_msg_disconnected(msg_buf, msg_size, &msg))
                     break;
                 if(lan64_state_g.addr == msg.addr)
+                {
                     event.type = LAN64_EVENT_DISCONNECTED;
+                    lan64_state_g.addr = LAN64_BROADCAST;
+                }
                 else
+                {
                     event.type = LAN64_EVENT_OTHER_DISCONNECTED;
+                }
                 event.disconnected.addr = msg.addr;
                 lan64_state_g.event_handlers.event_handler(event, event_usr);
                 break;
