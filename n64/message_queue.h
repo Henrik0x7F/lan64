@@ -11,7 +11,7 @@ typedef struct
     lan64_queue_size_t size,
                        iptr,
                        eptr;
-    u8* message_array;
+    lan64_u8* message_array;
 }lan64_queue_t;
 
 
@@ -23,7 +23,7 @@ void lan64_queue_create(lan64_queue_t* queue, void* message_array, lan64_queue_s
 /* Send a message
  * Returns 1 if successful
  */
-s32 lan64_queue_send(lan64_queue_t* queue, const void* msg, lan64_msg_size_t msg_size);
+lan64_s32 lan64_queue_send(lan64_queue_t* queue, const void* msg, lan64_msg_size_t msg_size);
 
 /* Polls for incoming messages
  * Returns len of message, 0 if none available

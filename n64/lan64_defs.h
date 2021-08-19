@@ -4,10 +4,10 @@
 #include "types.h"
 
 
-typedef u8 lan64_loglevel_t;
-typedef u8 lan64_addr_t;
-typedef u16 lan64_queue_size_t;
-typedef u8 lan64_msg_size_t;
+typedef lan64_u8 lan64_loglevel_t;
+typedef lan64_u8 lan64_addr_t;
+typedef lan64_u16 lan64_queue_size_t;
+typedef lan64_u8 lan64_msg_size_t;
 
 /* LAN64 version info */
 #define LAN64_VERSION_MAJOR 1

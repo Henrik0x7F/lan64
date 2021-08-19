@@ -8,12 +8,12 @@
 /* Event structs */
 typedef struct
 {
-    u8 x;
+    lan64_u8 x;
 }lan64_event_enabled_t;
 
 typedef struct
 {
-    u8 x;
+    lan64_u8 x;
 }lan64_event_disabled_t;
 
 /* Connected event */
@@ -33,7 +33,7 @@ typedef struct
 /* Event union */
 typedef struct
 {
-    u8 type;
+    lan64_u8 type;
     union
     {
         lan64_event_enabled_t enabled;
@@ -55,7 +55,7 @@ typedef void(*lan64_event_handler_t)(lan64_event_t, void*);
  * Packet buffer
  * Buffer len
  * User pointer */
-typedef void(*lan64_packet_handler_t)(lan64_addr_t, const void*, u32, void*);
+typedef void(*lan64_packet_handler_t)(lan64_addr_t, const void*, lan64_u32, void*);
 
 /* Handler struct */
 typedef struct
@@ -66,19 +66,19 @@ typedef struct
 
 
 /* Initialize LAN64, returns 1 on success, otherwise 0 */
-s32 lan64_init(const lan64_handlers_t* handlers);
+lan64_s32 lan64_init(const lan64_handlers_t* handlers);
 
 /* Check if LAN64 has been initialized */
-s32 lan64_initialized();
+lan64_s32 lan64_initialized();
 
 /* Update LAN64. LAN64 has to be initialized before, call every frame
  * Parameters are passed to event handlers */
-s32 lan64_update(void* packet_usr, void* event_usr);
+lan64_s32 lan64_update(void* packet_usr, void* event_usr);
 
 /* Send a log message */
-s32 lan64_log(lan64_loglevel_t loglevel, const char* msg);
+lan64_s32 lan64_log(lan64_loglevel_t loglevel, const char* msg);
 
 /* Send a packet to addr. Use LAN64_BROADCAST to send to everyone. Returns 1 on success */
-s32 lan64_send(lan64_addr_t addr, const void* buf, lan64_msg_size_t len);
+lan64_s32 lan64_send(lan64_addr_t addr, const void* buf, lan64_msg_size_t len);
 
 #endif

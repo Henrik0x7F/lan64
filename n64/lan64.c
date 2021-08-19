@@ -17,9 +17,9 @@
 /* LAN64 Header */
 typedef struct
 {
-    u16 version_proto;
-    u8 version_major;
-    u8 version_minor;
+    lan64_u16 version_proto;
+    lan64_u8 version_major;
+    lan64_u8 version_minor;
     lan64_queue_t* in_queue,
                  * out_queue;
 }lan64_header_t;
@@ -30,7 +30,7 @@ typedef struct
     /* Message queues */
     lan64_queue_t in_queue,
                   out_queue;
-    u8 in_queue_buf[LAN64_QUEUE_IN_SIZE],
+    lan64_u8 in_queue_buf[LAN64_QUEUE_IN_SIZE],
        out_queue_buf[LAN64_QUEUE_OUT_SIZE];
     lan64_handlers_t event_handlers;
     lan64_addr_t addr;
@@ -43,7 +43,7 @@ static lan64_header_t lan64_header_l;
 lan64_state_t lan64_state_g;
 
 #define LAN64_HEADER_PTR (*((lan64_header_t**)LAN64_HEADER_PTR_ADDR))
-#define LAN64_MAGIC_NUMBER_PTR ((u32*)LAN64_MAGIC_NUMBER_ADDR)
+#define LAN64_MAGIC_NUMBER_PTR ((lan64_u32*)LAN64_MAGIC_NUMBER_ADDR)
 
 
 static void dummy_event_handler(lan64_event_t a, void* b)
@@ -52,7 +52,7 @@ static void dummy_event_handler(lan64_event_t a, void* b)
     (void)b;
 }
 
-static void dummy_packet_handler(lan64_addr_t a, const void* b, u32 c, void* d)
+static void dummy_packet_handler(lan64_addr_t a, const void* b, lan64_u32 c, void* d)
 {
     (void)a;
     (void)b;
@@ -60,9 +60,9 @@ static void dummy_packet_handler(lan64_addr_t a, const void* b, u32 c, void* d)
     (void)d;
 }
 
-s32 lan64_initialize(const lan64_handlers_t* handlers)
+lan64_s32 lan64_initialize(const lan64_handlers_t* handlers)
 {
-    memset(&lan64_state_g, 0, sizeof(lan64_state_t));
+    lan64_memset(&lan64_state_g, 0, sizeof(lan64_state_t));
 
     /* Point header pointer to header */
     LAN64_HEADER_PTR = &lan64_header_l;
@@ -92,15 +92,15 @@ s32 lan64_initialize(const lan64_handlers_t* handlers)
     return 1;
 }
 
-s32 lan64_is_initialized()
+lan64_s32 lan64_is_initialized()
 {
     return (*LAN64_MAGIC_NUMBER_PTR == LAN64_MAGIC_NUMBER);
 }
 
-s32 lan64_update(void* packet_usr, void* event_usr)
+lan64_s32 lan64_update(void* packet_usr, void* event_usr)
 {
     lan64_msg_size_t msg_size = 0;
-    u8 msg_buf[LAN64_MAX_MSG_LEN];
+    lan64_u8 msg_buf[LAN64_MAX_MSG_LEN];
 
     /* Handle incoming messages */
     while((msg_size = lan64_queue_poll(&lan64_state_g.in_queue, msg_buf, LAN64_MAX_MSG_LEN)) != 0)
@@ -136,7 +136,7 @@ s32 lan64_update(void* packet_usr, void* event_usr)
                 else
                     event.type = LAN64_EVENT_OTHER_CONNECTED;
                 event.connected.addr = msg.addr;
-                memcpy(event.connected.name, msg.name, LAN64_NAME_LEN);
+                lan64_memcpy(event.connected.name, msg.name, LAN64_NAME_LEN);
                 lan64_state_g.event_handlers.event_handler(event, event_usr);
                 break;
             }
@@ -174,7 +174,7 @@ s32 lan64_update(void* packet_usr, void* event_usr)
     return 1;
 }
 
-s32 lan64_log(lan64_loglevel_t loglevel, const char* log_message)
+lan64_s32 lan64_log(lan64_loglevel_t loglevel, const char* log_message)
 {
     lan64_game_msg_log_t msg;
 
@@ -184,10 +184,10 @@ s32 lan64_log(lan64_loglevel_t loglevel, const char* log_message)
     return lan64_send_msg_log(&lan64_state_g.out_queue, &msg);
 }
 
-s32 lan64_send(lan64_addr_t addr, const void* buf, lan64_msg_size_t len)
+lan64_s32 lan64_send(lan64_addr_t addr, const void* buf, lan64_msg_size_t len)
 {
     lan64_game_msg_packet_t msg;
-    msg.data = (const u8*)buf;
+    msg.data = (const lan64_u8*)buf;
     msg.receiver = addr;
     msg.len = len;
 

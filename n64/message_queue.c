@@ -30,7 +30,7 @@ static void write(lan64_queue_t* queue, lan64_queue_size_t pos, const void* buf,
     lan64_queue_size_t i = 0;
     for(; i < size; ++i)
     {
-        queue->message_array[wrap(pos + i, queue->size)] = ((const u8*)buf)[i];
+        queue->message_array[wrap(pos + i, queue->size)] = ((const lan64_u8*)buf)[i];
     }
 }
 
@@ -39,7 +39,7 @@ static void read(const lan64_queue_t* queue, lan64_queue_size_t pos, void* out_b
     lan64_queue_size_t i = 0;
     for(; i < size; ++i)
     {
-        ((u8*)out_buf)[i] = queue->message_array[wrap(pos + i, queue->size)];
+        ((lan64_u8*)out_buf)[i] = queue->message_array[wrap(pos + i, queue->size)];
     }
 }
 
@@ -54,10 +54,10 @@ void lan64_queue_create(lan64_queue_t* queue, void* message_array, lan64_queue_s
     queue->size = queue_size;
     queue->eptr = 0;
     queue->iptr = 1;
-    queue->message_array = (u8*)message_array;
+    queue->message_array = (lan64_u8*)message_array;
 }
 
-s32 lan64_queue_send(lan64_queue_t* queue, const void* msg, lan64_msg_size_t msg_size)
+lan64_s32 lan64_queue_send(lan64_queue_t* queue, const void* msg, lan64_msg_size_t msg_size)
 {
     /* Check if message size is 0 */
     if(msg_size == 0)

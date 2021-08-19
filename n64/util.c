@@ -1,9 +1,9 @@
 #include "util.h"
 
 
-void* memset(void* dest, int ch, u32 count)
+void* lan64_memset(void* dest, int ch, lan64_u32 count)
 {
-    u32 i = 0;
+    lan64_u32 i = 0;
     for(; i < count; ++i)
     {
         ((char*)dest)[i] = (char)ch;
@@ -12,19 +12,19 @@ void* memset(void* dest, int ch, u32 count)
 }
 
 /* Very naive implementation */
-void* memcpy(void* dest, const void* src, u32 count)
+void* lan64_memcpy(void* dest, const void* src, lan64_u32 count)
 {
-    u32 i = 0;
+    lan64_u32 i = 0;
     for(; i < count; ++i)
     {
-        ((u8*)dest)[i] = ((const u8*)src)[i];
+        ((lan64_u8*)dest)[i] = ((const lan64_u8*)src)[i];
     }
     return dest;
 }
 
-char* strncpy(char* dest, const char* src, u32 max_len)
+char* lan64_strncpy(char* dest, const char* src, lan64_u32 max_len)
 {
-    u32 i = 0;
+    lan64_u32 i = 0;
     do
     {
         dest[i] = src[i];
@@ -35,9 +35,9 @@ char* strncpy(char* dest, const char* src, u32 max_len)
     return dest;
 }
 
-u32 strnlen(const char* str, u32 max_len)
+lan64_u32 lan64_strnlen(const char* str, lan64_u32 max_len)
 {
-    u32 len = 0;
+    lan64_u32 len = 0;
     for(; str[len] != '\0' && len < max_len; ++len){}
     return len;
 }
