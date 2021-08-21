@@ -43,14 +43,6 @@ struct IEmulator
     /// Return current emulator state
     virtual EmulatorState state() = 0;
 
-protected:
-    /// Read byte from physical address addr, should not do bounds checking, return true on success
-    virtual bool read_byte(n64_size_t addr, std::uint8_t& v) = 0;
-
-    /// Write byte to physical address addr, should not do bounds checking, return true on success
-    virtual bool write_byte(n64_size_t addr, std::uint8_t v) = 0;
-
-public:
     template<typename T>
     using Casted = std::conditional_t<std::is_enum_v<T>,
         Uint<sizeof(T) * 8>,
@@ -141,6 +133,10 @@ protected:
 
 /**
  * Derive from this class to implement the IEmulator
+ * Override the status function and implement two non virtual functions:
+ * - bool write_byte(n64_size_t addr, std::uint8_t v) Return true on success, use physical address range
+ * - bool read_byte(n64_size_t addr, std::uint8_t& v) Return true on success, use physical address range
+ * Check m64plus.hpp for an example
  * @tparam Derived Your derived class
  */
 template<typename Derived>
@@ -174,6 +170,11 @@ protected:
     void read_val(n64_size_t addr, double& v) final;
 
     void write_val(n64_size_t addr, double v) final;
+
+private:
+    bool read_impl(n64_size_t addr, std::uint8_t& v);
+
+    bool write_impl(n64_size_t addr, std::uint8_t v);
 };
 
 template<typename T>
@@ -188,7 +189,7 @@ void Emulator<T>::read_array(n64_size_t addr, void* buf, n64_size_t len)
 
     for(n64_size_t i{}; i < len; ++i)
     {
-        x &= read_byte(addr + i, reinterpret_cast<std::uint8_t*>(buf)[i]);
+        x &= read_impl(addr + i, reinterpret_cast<std::uint8_t*>(buf)[i]);
     }
 
     if(!x)
@@ -207,7 +208,7 @@ void Emulator<T>::write_array(n64_size_t addr, const void* buf, n64_size_t len)
 
     for(n64_size_t i{}; i < len; ++i)
     {
-        x &= write_byte(addr + i, reinterpret_cast<const std::uint8_t*>(buf)[i]);
+        x &= write_impl(addr + i, reinterpret_cast<const std::uint8_t*>(buf)[i]);
     }
 
     if(!x)
@@ -217,14 +218,14 @@ void Emulator<T>::write_array(n64_size_t addr, const void* buf, n64_size_t len)
 template<typename T>
 void Emulator<T>::read_val(n64_size_t addr, std::uint8_t& v)
 {
-    if(!read_byte(addr, v))
+    if(!read_impl(addr, v))
         throw std::runtime_error("Invalid read");
 }
 
 template<typename T>
 void Emulator<T>::write_val(n64_size_t addr, std::uint8_t v)
 {
-    if(!write_byte(addr, v))
+    if(!write_impl(addr, v))
         throw std::runtime_error("Invalid write");
 }
 
@@ -233,7 +234,7 @@ void Emulator<T>::read_val(n64_size_t addr, std::uint16_t& v)
 {
     std::uint8_t buf[2];
 
-    if(!read_byte(addr, buf[0]) || !read_byte(addr + 1, buf[1]))
+    if(!read_impl(addr, buf[0]) || !read_impl(addr + 1, buf[1]))
         throw std::runtime_error("Invalid read");
 
     v = ((std::uint16_t)buf[0] << 8u) | ((std::uint16_t)buf[1]);
@@ -247,7 +248,7 @@ void Emulator<T>::write_val(n64_size_t addr, std::uint16_t v)
     buf[0] = (std::uint8_t)(v >> 8u);
     buf[1] = (std::uint8_t)v;
 
-    if(!write_byte(addr, buf[0]) || !write_byte(addr + 1, buf[1]))
+    if(!write_impl(addr, buf[0]) || !write_impl(addr + 1, buf[1]))
         throw std::runtime_error("Invalid write");
 }
 
@@ -327,6 +328,20 @@ void Emulator<T>::write_val(n64_size_t addr, double v)
     std::uint64_t x;
     std::memcpy(&x, &v, sizeof(v));
     write_val(addr, x);
+}
+
+template<typename T>
+bool Emulator<T>::read_impl(n64_size_t addr, std::uint8_t& v)
+{
+    // If you receive an error in this line you didn't implement Emulator<T>'s static interface
+    return static_cast<T*>(this)->read_byte(addr, v);
+}
+
+template<typename T>
+bool Emulator<T>::write_impl(n64_size_t addr, std::uint8_t v)
+{
+    // If you receive an error in this line you didn't implement Emulator<T>'s static interface
+    return static_cast<T*>(this)->write_byte(addr, v);
 }
 
 } // LAN64

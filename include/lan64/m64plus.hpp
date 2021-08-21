@@ -39,6 +39,9 @@ struct M64PlusEmulator : Emulator<M64PlusEmulator>
             throw std::runtime_error("Invalid N64 base pointer");
     }
 
+    /*
+     * To implement your own emulator class you need to override this function
+     */
     EmulatorState state() final
     {
         int result{};
@@ -62,13 +65,15 @@ struct M64PlusEmulator : Emulator<M64PlusEmulator>
         return EmulatorState::STOPPED;
     }
 
-    bool read_byte(n64_size_t addr, std::uint8_t& v) final
+    // You also have to implement this non virtual function, addr is in physical address space
+    bool read_byte(n64_size_t addr, std::uint8_t& v)
     {
         v = base_ptr_[convert_addr(addr)];
         return true;
     }
 
-    bool write_byte(n64_size_t addr, std::uint8_t v) final
+    // Same for this one
+    bool write_byte(n64_size_t addr, std::uint8_t v)
     {
         base_ptr_[convert_addr(addr)] = v
     }
