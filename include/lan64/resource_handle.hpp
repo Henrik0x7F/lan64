@@ -26,10 +26,3 @@ struct Deleter<FN>
  */
 template<auto* free_fn>
 using ResourceHandle = std::unique_ptr<typename Deleter<free_fn>::ElementType, Deleter<free_fn>>;
-
-
-template<auto* free_fn>
-auto make_shared_resource_handle(typename Deleter<free_fn>::ElementType res = {})
-{
-    return std::shared_ptr<typename Deleter<free_fn>::ElementType>(res, free_fn);
-}
