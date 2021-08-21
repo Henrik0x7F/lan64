@@ -24,12 +24,20 @@ add_library(lan64 STATIC
         ${GIT_REVISION_FILE}
         src/emulator.cpp
         src/shared_object.cpp
+        src/enet_user.cpp
+        src/enet_host.cpp
         include/lan64/build_info.hpp
         include/lan64/resource_handle.hpp
         include/lan64/shared_object.hpp
         include/lan64/emulator.hpp
         include/lan64/m64plus.hpp
-        include/lan64/integer.hpp)
+        include/lan64/integer.hpp
+        include/lan64/enet_user.hpp
+        include/lan64/enet_host.hpp)
+
 
 target_include_directories(lan64 PRIVATE src)
 target_include_directories(lan64 PUBLIC include)
+
+include(ENet)
+target_link_libraries(lan64 enet_lib)
