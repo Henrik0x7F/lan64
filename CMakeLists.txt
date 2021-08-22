@@ -26,6 +26,7 @@ add_library(lan64 STATIC
         src/shared_object.cpp
         src/enet_user.cpp
         src/enet_host.cpp
+        src/message_queue.cpp
         include/lan64/build_info.hpp
         include/lan64/resource_handle.hpp
         include/lan64/shared_object.hpp
@@ -33,7 +34,8 @@ add_library(lan64 STATIC
         include/lan64/m64plus.hpp
         include/lan64/integer.hpp
         include/lan64/enet_user.hpp
-        include/lan64/enet_host.hpp)
+        include/lan64/enet_host.hpp
+        include/lan64/message_queue.hpp)
 
 
 target_include_directories(lan64 PRIVATE src)

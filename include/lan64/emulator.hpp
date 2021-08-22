@@ -24,6 +24,7 @@ constexpr std::uintptr_t offset_of(Field (Record::* field))
 }
 
 using n64_size_t = std::uint32_t;
+using n64_ptr_t = std::uint32_t;
 
 enum struct EmulatorState
 {
