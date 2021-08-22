@@ -9,7 +9,7 @@
 #include "lan64/resource_handle.hpp"
 
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 using shared_object_t = void*;
 #elif defined _WIN32
 #include <Windows.h>
