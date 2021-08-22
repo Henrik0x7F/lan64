@@ -67,7 +67,7 @@ bool MessageQueue::send(const void* buf, std::size_t len)
     return true;
 }
 
-std::size_t MessageQueue::out_free() const
+std::size_t MessageQueue::out_free()
 {
     QueueSize eptr, iptr, size;
 
@@ -78,7 +78,7 @@ std::size_t MessageQueue::out_free() const
     return size - in_use(size, eptr, iptr) - 1;
 }
 
-std::size_t MessageQueue::in_available() const
+std::size_t MessageQueue::in_available()
 {
     QueueSize eptr, iptr, size;
 
@@ -89,7 +89,7 @@ std::size_t MessageQueue::in_available() const
     return static_cast<std::size_t>(in_use(size, eptr, iptr));
 }
 
-MessageQueue::MsgSize MessageQueue::read_msg_size() const
+MessageQueue::MsgSize MessageQueue::read_msg_size()
 {
     QueueSize eptr, size;
     n64_ptr_t buf;

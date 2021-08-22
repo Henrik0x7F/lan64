@@ -32,12 +32,12 @@ struct MessageQueue
 
     bool send(const void* buf, std::size_t len);
 
-    std::size_t out_free() const;
+    std::size_t out_free();
 
-    std::size_t in_available() const;
+    std::size_t in_available();
 
 private:
-    MsgSize read_msg_size() const;
+    MsgSize read_msg_size();
     void write_msg_size(MsgSize size);
     void read(QueueSize pos, void* buf, QueueSize len);
     void write(QueueSize pos, const void* buf, QueueSize len);
