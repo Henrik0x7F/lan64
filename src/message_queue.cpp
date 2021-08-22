@@ -123,7 +123,7 @@ void MessageQueue::read(QueueSize pos, void* buf, QueueSize len)
     hdl_->read_field(in_state_, &State::size, size);
     hdl_->read_field(in_state_, &State::buf, buf_addr);
 
-    for(std::size_t i{}; i < len; ++i)
+    for(QueueSize i{}; i < len; ++i)
     {
         hdl_->read(buf_addr + wrap(pos + i, size), reinterpret_cast<std::uint8_t*>(buf)[i]);
     }
@@ -137,7 +137,7 @@ void MessageQueue::write(QueueSize pos, const void* buf, QueueSize len)
     hdl_->read_field(out_state_, &State::size, size);
     hdl_->read_field(out_state_, &State::buf, buf_addr);
 
-    for(std::size_t i{}; i < len; ++i)
+    for(QueueSize i{}; i < len; ++i)
     {
         hdl_->write(buf_addr + wrap(pos + i, size), reinterpret_cast<const std::uint8_t*>(buf)[i]);
     }
