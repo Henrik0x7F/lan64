@@ -17,4 +17,4 @@ if(WIN32)
 endif()
 
 target_include_directories(enet_lib PUBLIC ${ENET_INCLUDES})
-add_compile_definitions(HAS_SOCKLEN_T)
+target_compile_definitions(enet_lib PRIVATE HAS_SOCKLEN_T _WINSOCK_DEPRECATED_NO_WARNINGS)

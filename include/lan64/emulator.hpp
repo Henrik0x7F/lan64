@@ -97,7 +97,7 @@ struct IEmulator
     {
         static_assert(std::is_standard_layout_v<Record>);
 
-        read(struct_addr + offset_of(field), v);
+        read(struct_addr + static_cast<n64_ptr_t>(offset_of(field)), v);
     }
 
     template<typename Record, typename Field>
@@ -105,7 +105,7 @@ struct IEmulator
     {
         static_assert(std::is_standard_layout_v<Record>);
 
-        write(struct_addr + offset_of(field), v);
+        write(struct_addr + static_cast<n64_ptr_t>(offset_of(field)), v);
     }
 
     virtual void read_array(n64_ptr_t addr, void* buf, n64_size_t len) = 0;
