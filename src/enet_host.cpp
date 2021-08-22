@@ -8,12 +8,6 @@
 namespace LAN64
 {
 
-static bool valid_ip4(const char* str)
-{
-    std::uint32_t x{};
-    return (inet_pton(AF_INET, str, &x) == 1);
-}
-
 ENetClient::ENetClient(ENetClient::Listener& listener, std::size_t channels, std::uint32_t in_bw, std::uint32_t out_bw):
     listener_(&listener),
     channel_count_(channels),
@@ -38,10 +32,7 @@ void ENetClient::connect(const std::string& hostname, std::uint16_t port, std::u
     ENetAddress addr;
     addr.port = port;
 
-    if(valid_ip4(hostname.c_str()))
-        enet_address_set_host_ip(&addr, hostname.c_str());
-    else
-        enet_address_set_host(&addr, hostname.c_str());
+    enet_address_set_host(&addr, hostname.c_str());
 
     peer_.reset(enet_host_connect(host_.get(), &addr, channel_count_, data));
     if(!peer_)
