@@ -54,7 +54,7 @@ struct IEmulator
     // All public memory access functions use logical address space
 
     template<typename T>
-    void read(n64_size_t addr, T& v)
+    void read(n64_ptr_t addr, T& v)
     {
         addr = logical_to_physical(addr);
 
@@ -67,7 +67,7 @@ struct IEmulator
     }
 
     template<typename T>
-    void write(n64_size_t addr, T v)
+    void write(n64_ptr_t addr, T v)
     {
         addr = logical_to_physical(addr);
 
@@ -79,21 +79,21 @@ struct IEmulator
     }
 
     template<typename T>
-    void readc(n64_size_t& addr, T& v)
+    void readc(n64_ptr_t& addr, T& v)
     {
         read(addr, v);
         addr += sizeof(T);
     }
 
     template<typename T>
-    void writec(n64_size_t& addr, T v)
+    void writec(n64_ptr_t& addr, T v)
     {
         write(addr, v);
         addr += sizeof(T);
     }
 
     template<typename Record, typename Field>
-    void read_field(n64_size_t struct_addr, Field (Record::* field), Field& v)
+    void read_field(n64_ptr_t struct_addr, Field (Record::* field), Field& v)
     {
         static_assert(std::is_standard_layout_v<Record>);
 
@@ -101,85 +101,85 @@ struct IEmulator
     }
 
     template<typename Record, typename Field>
-    void write_field(n64_size_t struct_addr, Field (Record::* field), Field v)
+    void write_field(n64_ptr_t struct_addr, Field (Record::* field), Field v)
     {
         static_assert(std::is_standard_layout_v<Record>);
 
         write(struct_addr + offset_of(field), v);
     }
 
-    virtual void read_array(n64_size_t addr, void* buf, n64_size_t len) = 0;
-    virtual void write_array(n64_size_t addr, const void* buf, n64_size_t len) = 0;
+    virtual void read_array(n64_ptr_t addr, void* buf, n64_size_t len) = 0;
+    virtual void write_array(n64_ptr_t addr, const void* buf, n64_size_t len) = 0;
 
 protected:
     // All these use physical addresses
-    virtual void read_val(n64_size_t addr, std::uint8_t& v) = 0;
-    virtual void write_val(n64_size_t addr, std::uint8_t v) = 0;
-    virtual void read_val(n64_size_t addr, std::uint16_t& v) = 0;
-    virtual void write_val(n64_size_t addr, std::uint16_t v) = 0;
-    virtual void read_val(n64_size_t addr, std::uint32_t& v) = 0;
-    virtual void write_val(n64_size_t addr, std::uint32_t v) = 0;
-    virtual void read_val(n64_size_t addr, std::uint64_t& v) = 0;
-    virtual void write_val(n64_size_t addr, std::uint64_t v) = 0;
-    virtual void read_val(n64_size_t addr, float& v) = 0;
-    virtual void write_val(n64_size_t addr, float v) = 0;
-    virtual void read_val(n64_size_t addr, double& v) = 0;
-    virtual void write_val(n64_size_t addr, double v) = 0;
+    virtual void read_val(n64_ptr_t addr, std::uint8_t& v) = 0;
+    virtual void write_val(n64_ptr_t addr, std::uint8_t v) = 0;
+    virtual void read_val(n64_ptr_t addr, std::uint16_t& v) = 0;
+    virtual void write_val(n64_ptr_t addr, std::uint16_t v) = 0;
+    virtual void read_val(n64_ptr_t addr, std::uint32_t& v) = 0;
+    virtual void write_val(n64_ptr_t addr, std::uint32_t v) = 0;
+    virtual void read_val(n64_ptr_t addr, std::uint64_t& v) = 0;
+    virtual void write_val(n64_ptr_t addr, std::uint64_t v) = 0;
+    virtual void read_val(n64_ptr_t addr, float& v) = 0;
+    virtual void write_val(n64_ptr_t addr, float v) = 0;
+    virtual void read_val(n64_ptr_t addr, double& v) = 0;
+    virtual void write_val(n64_ptr_t addr, double v) = 0;
 
     /// Checks (physical) address bounds
-    static bool check_bounds(n64_size_t addr, n64_size_t len);
+    static bool check_bounds(n64_ptr_t addr, n64_size_t len);
 
-    static n64_size_t logical_to_physical(n64_size_t addr);
+    static n64_ptr_t logical_to_physical(n64_ptr_t addr);
 };
 
 /**
  * Derive from this class to implement the IEmulator
  * Override the status function and implement two non virtual functions:
- * - bool write_byte(n64_size_t addr, std::uint8_t v) Return true on success, use physical address range
- * - bool read_byte(n64_size_t addr, std::uint8_t& v) Return true on success, use physical address range
+ * - bool write_byte(n64_ptr_t addr, std::uint8_t v) Return true on success, use physical address range
+ * - bool read_byte(n64_ptr_t addr, std::uint8_t& v) Return true on success, use physical address range
  * Check m64plus.hpp for an example
  * @tparam Derived Your derived class
  */
 template<typename Derived>
 struct Emulator : IEmulator
 {
-    void read_array(n64_size_t addr, void* buf, n64_size_t len) final;
+    void read_array(n64_ptr_t addr, void* buf, n64_size_t len) final;
 
-    void write_array(n64_size_t addr, const void* buf, n64_size_t len) final;
+    void write_array(n64_ptr_t addr, const void* buf, n64_size_t len) final;
 
 protected:
-    void read_val(n64_size_t addr, std::uint8_t& v) final;
+    void read_val(n64_ptr_t addr, std::uint8_t& v) final;
 
-    void write_val(n64_size_t addr, std::uint8_t v) final;
+    void write_val(n64_ptr_t addr, std::uint8_t v) final;
 
-    void read_val(n64_size_t addr, std::uint16_t& v) final;
+    void read_val(n64_ptr_t addr, std::uint16_t& v) final;
 
-    void write_val(n64_size_t addr, std::uint16_t v) final;
+    void write_val(n64_ptr_t addr, std::uint16_t v) final;
 
-    void read_val(n64_size_t addr, std::uint32_t& v) final;
+    void read_val(n64_ptr_t addr, std::uint32_t& v) final;
 
-    void write_val(n64_size_t addr, std::uint32_t v) final;
+    void write_val(n64_ptr_t addr, std::uint32_t v) final;
 
-    void read_val(n64_size_t addr, std::uint64_t& v) final;
+    void read_val(n64_ptr_t addr, std::uint64_t& v) final;
 
-    void write_val(n64_size_t addr, std::uint64_t v) final;
+    void write_val(n64_ptr_t addr, std::uint64_t v) final;
 
-    void read_val(n64_size_t addr, float& v) final;
+    void read_val(n64_ptr_t addr, float& v) final;
 
-    void write_val(n64_size_t addr, float v) final;
+    void write_val(n64_ptr_t addr, float v) final;
 
-    void read_val(n64_size_t addr, double& v) final;
+    void read_val(n64_ptr_t addr, double& v) final;
 
-    void write_val(n64_size_t addr, double v) final;
+    void write_val(n64_ptr_t addr, double v) final;
 
 private:
-    bool read_impl(n64_size_t addr, std::uint8_t& v);
+    bool read_impl(n64_ptr_t addr, std::uint8_t& v);
 
-    bool write_impl(n64_size_t addr, std::uint8_t v);
+    bool write_impl(n64_ptr_t addr, std::uint8_t v);
 };
 
 template<typename T>
-void Emulator<T>::read_array(n64_size_t addr, void* buf, n64_size_t len)
+void Emulator<T>::read_array(n64_ptr_t addr, void* buf, n64_size_t len)
 {
     addr = logical_to_physical(addr);
 
@@ -198,7 +198,7 @@ void Emulator<T>::read_array(n64_size_t addr, void* buf, n64_size_t len)
 }
 
 template<typename T>
-void Emulator<T>::write_array(n64_size_t addr, const void* buf, n64_size_t len)
+void Emulator<T>::write_array(n64_ptr_t addr, const void* buf, n64_size_t len)
 {
     addr = logical_to_physical(addr);
 
@@ -217,21 +217,21 @@ void Emulator<T>::write_array(n64_size_t addr, const void* buf, n64_size_t len)
 }
 
 template<typename T>
-void Emulator<T>::read_val(n64_size_t addr, std::uint8_t& v)
+void Emulator<T>::read_val(n64_ptr_t addr, std::uint8_t& v)
 {
     if(!read_impl(addr, v))
         throw std::runtime_error("Invalid read");
 }
 
 template<typename T>
-void Emulator<T>::write_val(n64_size_t addr, std::uint8_t v)
+void Emulator<T>::write_val(n64_ptr_t addr, std::uint8_t v)
 {
     if(!write_impl(addr, v))
         throw std::runtime_error("Invalid write");
 }
 
 template<typename T>
-void Emulator<T>::read_val(n64_size_t addr, std::uint16_t& v)
+void Emulator<T>::read_val(n64_ptr_t addr, std::uint16_t& v)
 {
     std::uint8_t buf[2];
 
@@ -242,7 +242,7 @@ void Emulator<T>::read_val(n64_size_t addr, std::uint16_t& v)
 }
 
 template<typename T>
-void Emulator<T>::write_val(n64_size_t addr, std::uint16_t v)
+void Emulator<T>::write_val(n64_ptr_t addr, std::uint16_t v)
 {
     std::uint8_t buf[2];
 
@@ -254,7 +254,7 @@ void Emulator<T>::write_val(n64_size_t addr, std::uint16_t v)
 }
 
 template<typename T>
-void Emulator<T>::read_val(n64_size_t addr, std::uint32_t& v)
+void Emulator<T>::read_val(n64_ptr_t addr, std::uint32_t& v)
 {
     std::uint16_t buf[2];
 
@@ -265,7 +265,7 @@ void Emulator<T>::read_val(n64_size_t addr, std::uint32_t& v)
 }
 
 template<typename T>
-void Emulator<T>::write_val(n64_size_t addr, std::uint32_t v)
+void Emulator<T>::write_val(n64_ptr_t addr, std::uint32_t v)
 {
     std::uint16_t buf[2];
 
@@ -277,7 +277,7 @@ void Emulator<T>::write_val(n64_size_t addr, std::uint32_t v)
 }
 
 template<typename T>
-void Emulator<T>::read_val(n64_size_t addr, std::uint64_t& v)
+void Emulator<T>::read_val(n64_ptr_t addr, std::uint64_t& v)
 {
     std::uint32_t buf[2];
 
@@ -288,7 +288,7 @@ void Emulator<T>::read_val(n64_size_t addr, std::uint64_t& v)
 }
 
 template<typename T>
-void Emulator<T>::write_val(n64_size_t addr, std::uint64_t v)
+void Emulator<T>::write_val(n64_ptr_t addr, std::uint64_t v)
 {
     std::uint32_t buf[2];
 
@@ -300,7 +300,7 @@ void Emulator<T>::write_val(n64_size_t addr, std::uint64_t v)
 }
 
 template<typename T>
-void Emulator<T>::read_val(n64_size_t addr, float& v)
+void Emulator<T>::read_val(n64_ptr_t addr, float& v)
 {
     std::uint32_t x;
     read_val(addr, x);
@@ -308,7 +308,7 @@ void Emulator<T>::read_val(n64_size_t addr, float& v)
 }
 
 template<typename T>
-void Emulator<T>::write_val(n64_size_t addr, float v)
+void Emulator<T>::write_val(n64_ptr_t addr, float v)
 {
     std::uint32_t x;
     std::memcpy(&x, &v, sizeof(v));
@@ -316,7 +316,7 @@ void Emulator<T>::write_val(n64_size_t addr, float v)
 }
 
 template<typename T>
-void Emulator<T>::read_val(n64_size_t addr, double& v)
+void Emulator<T>::read_val(n64_ptr_t addr, double& v)
 {
     std::uint64_t x;
     read_val(addr, x);
@@ -324,7 +324,7 @@ void Emulator<T>::read_val(n64_size_t addr, double& v)
 }
 
 template<typename T>
-void Emulator<T>::write_val(n64_size_t addr, double v)
+void Emulator<T>::write_val(n64_ptr_t addr, double v)
 {
     std::uint64_t x;
     std::memcpy(&x, &v, sizeof(v));
@@ -332,14 +332,14 @@ void Emulator<T>::write_val(n64_size_t addr, double v)
 }
 
 template<typename T>
-bool Emulator<T>::read_impl(n64_size_t addr, std::uint8_t& v)
+bool Emulator<T>::read_impl(n64_ptr_t addr, std::uint8_t& v)
 {
     // If you receive an error in this line you didn't implement Emulator<T>'s static interface
     return static_cast<T*>(this)->read_byte(addr, v);
 }
 
 template<typename T>
-bool Emulator<T>::write_impl(n64_size_t addr, std::uint8_t v)
+bool Emulator<T>::write_impl(n64_ptr_t addr, std::uint8_t v)
 {
     // If you receive an error in this line you didn't implement Emulator<T>'s static interface
     return static_cast<T*>(this)->write_byte(addr, v);

@@ -66,20 +66,20 @@ struct M64PlusEmulator : Emulator<M64PlusEmulator>
     }
 
     // You also have to implement this non virtual function, addr is in physical address space
-    bool read_byte(n64_size_t addr, std::uint8_t& v)
+    bool read_byte(n64_ptr_t addr, std::uint8_t& v)
     {
         v = base_ptr_[convert_addr(addr)];
         return true;
     }
 
     // Same for this one
-    bool write_byte(n64_size_t addr, std::uint8_t v)
+    bool write_byte(n64_ptr_t addr, std::uint8_t v)
     {
         base_ptr_[convert_addr(addr)] = v
     }
 
 private:
-    static n64_size_t convert_addr(n64_size_t addr)
+    static n64_ptr_t convert_addr(n64_ptr_t addr)
     {
         return (addr - (2 * (addr % BSWAP_SIZE)) + (BSWAP_SIZE - 1));
     }
