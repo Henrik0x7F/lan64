@@ -60,7 +60,7 @@ static void dummy_packet_handler(lan64_addr_t a, const void* b, lan64_u32 c, voi
     (void)d;
 }
 
-lan64_s32 lan64_initialize(const lan64_handlers_t* handlers)
+lan64_s32 lan64_init(const lan64_handlers_t* handlers)
 {
     lan64_memset(&lan64_state_g, 0, sizeof(lan64_state_t));
 
@@ -92,7 +92,7 @@ lan64_s32 lan64_initialize(const lan64_handlers_t* handlers)
     return 1;
 }
 
-lan64_s32 lan64_is_initialized()
+lan64_s32 lan64_initialized()
 {
     return (*LAN64_MAGIC_NUMBER_PTR == LAN64_MAGIC_NUMBER);
 }
