@@ -11,6 +11,7 @@ namespace LAN64
 using Lan64Addr = std::uint8_t;
 
 static constexpr std::size_t MAX_NAME_LEN{25},
-                             MAX_PACKET_LEN{252};
+                             MAX_PACKET_LEN{252},
+                             MAX_LOG_LEN{253};
 
 }

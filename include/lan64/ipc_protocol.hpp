@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <string>
 #include <vector>
 #include "net_protocol.hpp"
 
@@ -73,7 +74,7 @@ struct ClientMessageEnable : IPC_Message
 
     bool serialize(void* buf, std::size_t len) const override
     {
-        if(len < sizeof(IPC_ClientMsg::ENABLE))
+        if(len < serialized_size())
             return false;
 
         reinterpret_cast<IPC_ClientMsg*>(buf)[0] = IPC_ClientMsg::ENABLE;
@@ -90,7 +91,7 @@ struct ClientMessageDisable : IPC_Message
 
     bool serialize(void* buf, std::size_t len) const override
     {
-        if(len < sizeof(IPC_ClientMsg))
+        if(len < serialized_size())
             return false;
 
         reinterpret_cast<IPC_ClientMsg*>(buf)[0] = IPC_ClientMsg::DISABLE;
